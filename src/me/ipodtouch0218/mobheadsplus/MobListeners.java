@@ -111,8 +111,8 @@ public class MobListeners implements Listener {
 			}
 			
 			SkullMeta droppedMeta = (SkullMeta) item.getItemMeta();
-		    Class<?> headMetaClass = droppedMeta.getClass();
-		    GameProfile profile = Reflections.getField(headMetaClass, "profile", GameProfile.class).get(droppedMeta);
+			Class<?> headMetaClass = droppedMeta.getClass();
+			GameProfile profile = Reflections.getField(headMetaClass, "profile", GameProfile.class).get(droppedMeta);
 			
 			dataLoop:
 			for (EntityData data : instance.getAllEntityData()) {
