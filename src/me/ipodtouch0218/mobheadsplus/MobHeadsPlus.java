@@ -32,16 +32,24 @@ public class MobHeadsPlus extends JavaPlugin {
 	public void loadDropChances() {
 		headDropChances.clear();
 		
-		ConfigurationSection mobConfig = getConfig().getConfigurationSection("mobs");
-		for (String entity : mobConfig.getValues(false).keySet()) {
-			ConfigurationSection entitySection = mobConfig.getConfigurationSection(entity);
+		ConfigurationSection entityConfigurationSection = getConfig().getConfigurationSection("mobs");
+		for (String entity : entityConfigurationSection.getValues(false).keySet()) {
+			ConfigurationSection specificEntitySection = entityConfigurationSection.getConfigurationSection(entity);
 			
-			EntityType eType = EntityType.valueOf(entity);
-			for (String subEn : entitySection.getValues(false).keySet()) {
-				ConfigurationSection subSection = entitySection.getConfigurationSection(subEn);
+			EntityType eType;
+			try {
+				eType = EntityType.valueOf(entity);
+			} catch (IllegalArgumentException e) {
+				continue; //Everything is fine... I swear
+			}
+			
+			for (String subEn : specificEntitySection.getValues(false).keySet()) {
+				ConfigurationSection subSection = specificEntitySection.getConfigurationSection(subEn);
 				EntityData data = new EntityData(eType, subSection);
 				
-				if (!headDropChances.contains(data)) headDropChances.add(data);
+				if (!headDropChances.contains(data)) {
+					headDropChances.add(data);
+				}
 			}
 		}
 		
@@ -52,16 +60,22 @@ public class MobHeadsPlus extends JavaPlugin {
 			ConfigurationSection fishSection = fishConfig.getConfigurationSection(fishType);
 			
 			EntityData data = new EntityData(eType, fishSection);
-			if (!headDropChances.contains(data)) headDropChances.add(data);
+			if (!headDropChances.contains(data)) {
+				headDropChances.add(data);
+			}
 		}
 	}
 	
 	public EntityData getEntityData(Entity en, String data) {
 		for (EntityData enData : headDropChances) {
-			if (enData.equalsEntity(en, data)) { return enData; }
+			if (enData.equalsEntity(en, data)) { 
+				return enData; 
+			}
 		}
 		return null;
 	}
 	
-	public ArrayList<EntityData> getAllEntityData() { return headDropChances; }
+	public ArrayList<EntityData> getAllEntityData() { 
+		return headDropChances; 
+	}
 }

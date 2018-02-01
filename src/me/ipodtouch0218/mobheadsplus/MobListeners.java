@@ -36,10 +36,14 @@ public class MobListeners implements Listener {
 	
 	@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 	public void onEntityDeath(EntityDeathEvent e) {
-		if (!(e.getEntity() instanceof LivingEntity)) { return; }
+		if (!(e.getEntity() instanceof LivingEntity)) { 
+			return; 
+		}
 		
 		LivingEntity en = (LivingEntity) e.getEntity();
-		if (en.getKiller() == null) { return; } //CHECK IF KILLER PLAYER EXISTS
+		if (en.getKiller() == null) { 
+			return; 
+		} //CHECK IF KILLER PLAYER EXISTS
 		Player killer = en.getKiller();
 		
 		//if (!killer.hasPermission("")) { return; } //PLAYER DOESNT HAVE PERMISSION
@@ -75,8 +79,12 @@ public class MobListeners implements Listener {
 	
 	@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 	public void onFishEvent(PlayerFishEvent e) {
-		if (!instance.getConfig().getBoolean("fish.enabled")) { return; }
-		if (e.getState() != State.CAUGHT_FISH) { return; }
+		if (!instance.getConfig().getBoolean("fish.enabled")) { 
+			return; 
+		}
+		if (e.getState() != State.CAUGHT_FISH) { 
+			return; 
+		}
 		
 		ItemStack item = ((Item) e.getCaught()).getItemStack();
 		EntityData data = instance.getEntityData(e.getCaught(), "" + item.getDurability());
@@ -91,12 +99,16 @@ public class MobListeners implements Listener {
 	
 	@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 	public void onBlockBreak(BlockBreakEvent e) {
-		if (e.getBlock().getType() != Material.SKULL) { return; }
+		if (e.getBlock().getType() != Material.SKULL) { 
+			return; 
+		}
 		
 		ArrayList<ItemStack> newDrops = new ArrayList<>();
 		e.setDropItems(false);
 		for (ItemStack item : e.getBlock().getDrops()) {
-			if (item.getType() != Material.SKULL_ITEM) { continue; }
+			if (item.getType() != Material.SKULL_ITEM) { 
+				continue; 
+			}
 			
 			SkullMeta droppedMeta = (SkullMeta) item.getItemMeta();
 		    Class<?> headMetaClass = droppedMeta.getClass();
