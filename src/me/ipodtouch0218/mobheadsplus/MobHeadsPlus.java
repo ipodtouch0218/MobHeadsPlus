@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,6 +20,10 @@ public class MobHeadsPlus extends JavaPlugin {
 		Skull.instance = this;
 		loadDropChances();
 		Bukkit.getPluginManager().registerEvents(new MobListeners(this), this);
+		
+		CommandSpawnHead spawnHead = new CommandSpawnHead(this);
+		getCommand("spawnhead").setExecutor(spawnHead);
+		getCommand("spawnhead").setTabCompleter(spawnHead);
 	}
 	
 	@Override
@@ -53,6 +56,8 @@ public class MobHeadsPlus extends JavaPlugin {
 			}
 		}
 		
+		
+		
 		ConfigurationSection fishConfig = getConfig().getConfigurationSection("fish");
 		EntityType eType = EntityType.DROPPED_ITEM;
 		for (String fishType : fishConfig.getValues(false).keySet()) {
@@ -66,7 +71,7 @@ public class MobHeadsPlus extends JavaPlugin {
 		}
 	}
 	
-	public EntityData getEntityData(Entity en, String data) {
+	public EntityData getEntityData(EntityType en, String data) {
 		for (EntityData enData : headDropChances) {
 			if (enData.equalsEntity(en, data)) { 
 				return enData; 

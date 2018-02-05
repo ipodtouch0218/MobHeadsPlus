@@ -1,4 +1,8 @@
 mobs:
+  require-permission: false
+  permission: mobheadsplus.drops.mobs
+  enabled: true
+
   PLAYER:
     DEFAULT:
       base: 0.4994
@@ -564,6 +568,8 @@ mobs:
       name: "&7Wither Boss Head"
 
 fish:
+  require-permission: false
+  permission: mobheadsplus.drops.fish
   enabled: true
   0:
     base: 0.0008

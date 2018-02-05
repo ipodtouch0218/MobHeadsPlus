@@ -3,7 +3,6 @@ package me.ipodtouch0218.mobheadsplus.dataholder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -35,10 +34,11 @@ public class EntityData {
 		String texture = sec.getString("texture");
 		if (texture.matches("\\d+")) {
 			this.skull = new ItemStack(Material.SKULL_ITEM, 1, Short.parseShort(texture));
+			this.texture = texture;
 		} else {
 			ownerName = (type + "-" + sec.getName());
 			this.skull = Skull.getCustomSkull(sec.getString("texture"), ownerName);
-			texture = sec.getString("texture");
+			this.texture = sec.getString("texture");
 		}
 		
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
@@ -58,11 +58,13 @@ public class EntityData {
 	public float getLootingIncreaseChance() { return lootingIncrease; }
 	public ItemStack getSkull() { return skull; }
 	
-	public boolean equalsEntity(Entity en, String data) {
-		if (en.getType() != type) { return false; }
+	public boolean equalsEntity(EntityType en, String data) {
+		if (en != type) { return false; }
 		if (data == null && this.data == null) { return true; }
+		if (data == null || this.data == null) { return false; }
 		if (!data.equals(this.data)) { return false; }
 		
 		return true;
 	}
+	
 }

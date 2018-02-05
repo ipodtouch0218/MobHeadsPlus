@@ -3,3 +3,9 @@ version: 1.0
 author: ipodtouch0218
 
 main: me.ipodtouch0218.mobheadsplus.MobHeadsPlus
+commands:
+  spawnhead:
+    usage: /<command> <entity> [data]
+    description: Adds a custom entity skull to the sender's Inventory
+    permission: mobheadsplus.command.spawnhead
+    default: OP

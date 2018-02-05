@@ -3,6 +3,7 @@ package me.ipodtouch0218.mobheadsplus;
 import java.util.ArrayList;
 
 import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -36,6 +37,9 @@ public class MobListeners implements Listener {
 	
 	@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 	public void onEntityDeath(EntityDeathEvent e) {
+		if (!instance.getConfig().getBoolean("mobs.enabled")) {
+			return;
+		}
 		if (!(e.getEntity() instanceof LivingEntity)) { 
 			return; 
 		}
@@ -46,9 +50,11 @@ public class MobListeners implements Listener {
 		} //CHECK IF KILLER PLAYER EXISTS
 		Player killer = en.getKiller();
 		
-		//if (!killer.hasPermission("")) { return; } //PLAYER DOESNT HAVE PERMISSION
+		if (instance.getConfig().getBoolean("mobs.require-permission") && !killer.hasPermission(instance.getConfig().getString("mobs.permission"))) { 
+			return; 
+		} //PLAYER DOESNT HAVE PERMISSION
 		
-		EntityData data = instance.getEntityData(en, Utils.getDataFromEntity(en));
+		EntityData data = instance.getEntityData(en.getType(), Utils.getDataFromEntity(en));
 		int lootingAmount = 0;
 		
 		if (killer.getInventory().getItemInMainHand() != null) { //CHECK FOR LOOTING BONUS
@@ -85,9 +91,12 @@ public class MobListeners implements Listener {
 		if (e.getState() != State.CAUGHT_FISH) { 
 			return; 
 		}
+		if (instance.getConfig().getBoolean("fish.require-permission") && !e.getPlayer().hasPermission(instance.getConfig().getString("fish.permission"))) {
+			return;
+		}
 		
 		ItemStack item = ((Item) e.getCaught()).getItemStack();
-		EntityData data = instance.getEntityData(e.getCaught(), "" + item.getDurability());
+		EntityData data = instance.getEntityData(e.getCaught().getType(), "" + item.getDurability());
 	
 		double chance = data.getBaseDropChance();
 		double generated = Math.random();
@@ -96,7 +105,9 @@ public class MobListeners implements Listener {
 			((Item) e.getCaught()).setItemStack(skull);
 		}
 	}
+		
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (e.getBlock().getType() != Material.SKULL) { 
@@ -105,24 +116,47 @@ public class MobListeners implements Listener {
 		
 		ArrayList<ItemStack> newDrops = new ArrayList<>();
 		e.setDropItems(false);
+		bigLoop:
 		for (ItemStack item : e.getBlock().getDrops()) {
 			if (item.getType() != Material.SKULL_ITEM) { 
 				continue; 
+			}
+			SkullType type = ((org.bukkit.block.Skull) e.getBlock().getState()).getSkullType();
+			if (type != SkullType.PLAYER) {
+				String compString = type.name();
+				if (type == SkullType.DRAGON) {
+					compString = "ENDER_DRAGON"; //because "Dragon" isnt the entity type name...
+				}
+				for (EntityData data : instance.getAllEntityData()) {
+					if (data.getType().name().equals(compString)) {
+						newDrops.add(data.getSkull());
+						continue bigLoop;
+					}
+				}
+				continue;
 			}
 			
 			SkullMeta droppedMeta = (SkullMeta) item.getItemMeta();
 			Class<?> headMetaClass = droppedMeta.getClass();
 			GameProfile profile = Reflections.getField(headMetaClass, "profile", GameProfile.class).get(droppedMeta);
 			
-			dataLoop:
 			for (EntityData data : instance.getAllEntityData()) {
 				if (profile.getName().equals(data.getOwnerName())) {
-					e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation(), data.getSkull());
-					break dataLoop;
+					newDrops.add(data.getSkull());
+					continue bigLoop;
 				}
 			}
+			
+			//No matches for default skulls, now parsing player data.
+			
+			EntityData playerData = instance.getEntityData(EntityType.PLAYER, null);
+			droppedMeta.setDisplayName(playerData.getSkull().getItemMeta().getDisplayName().replace("{0}", droppedMeta.getOwner()));
+			item.setDurability((short) 3);
+			item.setItemMeta(droppedMeta);
+			
+			newDrops.add(item);
 		}
 		
-		newDrops.forEach(it -> e.getBlock().getLocation().add(.5,0,.5).getWorld().dropItemNaturally(e.getBlock().getLocation().add(.5,0,.5), it));
+		newDrops.forEach(it -> e.getBlock().getLocation().getWorld().dropItemNaturally(e.getBlock().getLocation().add(.5,0,.5), it));
 	}
 }
