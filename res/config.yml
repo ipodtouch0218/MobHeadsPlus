@@ -49,7 +49,7 @@ mobs:
       base: 0.14
       looting: 0.02
       texture: "http://textures.minecraft.net/texture/5389e0d5d3e81f84b570e2978244b3a73e5a22bcdb6874b44ef5d0f66ca24eec"
-      name "&eBritish Shorthair Cat Head"
+      name: "&eBritish Shorthair Cat Head"
     CALICO:
       base: 0.14
       looting: 0.02
