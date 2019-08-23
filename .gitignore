@@ -1,6 +1,8 @@
 .settings
 .classpath
 .project
+*.iml
+.gitattributes
 target
 
 *.class

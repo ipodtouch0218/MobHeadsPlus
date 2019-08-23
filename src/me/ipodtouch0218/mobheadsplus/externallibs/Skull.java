@@ -2,10 +2,10 @@ package me.ipodtouch0218.mobheadsplus.externallibs;
 
 import java.util.UUID;
 
-import org.apache.commons.codec.binary.Base64;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.libs.org.apache.commons.codec.binary.Base64;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -82,14 +82,14 @@ public enum Skull {
         }
         byte[] encodedData = base64.encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
         propertyMap.put("textures", new Property("textures", new String(encodedData)));
-        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta headMeta = head.getItemMeta();
         Class<?> headMetaClass = headMeta.getClass();
         Reflections.getField(headMetaClass, "profile", GameProfile.class).set(headMeta, profile);
         head.setItemMeta(headMeta);
         return head;
     }
-    
+   
     public static void setCustomSkullBlock(String url, Location loc) {
         GameProfile profile = new GameProfile(UUID.randomUUID(), null);
         PropertyMap propertyMap = profile.getProperties();
@@ -100,7 +100,7 @@ public enum Skull {
         propertyMap.put("textures", new Property("textures", new String(encodedData)));
         
         Block block = loc.getBlock();
-        block.setType(Material.SKULL);
+        block.setType(Material.PLAYER_HEAD);
         org.bukkit.block.Skull skull = (org.bukkit.block.Skull) block.getState();
         skull.setMetadata("textures", (MetadataValue) new FixedMetadataValue(instance, encodedData));
         skull.update();
@@ -114,7 +114,7 @@ public enum Skull {
      */
     @SuppressWarnings("deprecation")
 	public static ItemStack getPlayerSkull(String name) {
-        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
         meta.setOwner(name);
         itemStack.setItemMeta(meta);
@@ -137,7 +137,7 @@ public enum Skull {
      */
     @SuppressWarnings("deprecation")
 	public ItemStack getSkull() {
-        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
         meta.setOwner(id);
         itemStack.setItemMeta(meta);

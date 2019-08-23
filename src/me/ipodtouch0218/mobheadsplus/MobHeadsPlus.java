@@ -55,20 +55,6 @@ public class MobHeadsPlus extends JavaPlugin {
 				}
 			}
 		}
-		
-		
-		
-		ConfigurationSection fishConfig = getConfig().getConfigurationSection("fish");
-		EntityType eType = EntityType.DROPPED_ITEM;
-		for (String fishType : fishConfig.getValues(false).keySet()) {
-			if (!fishConfig.isConfigurationSection(fishType)) { continue; }
-			ConfigurationSection fishSection = fishConfig.getConfigurationSection(fishType);
-			
-			EntityData data = new EntityData(eType, fishSection);
-			if (!headDropChances.contains(data)) {
-				headDropChances.add(data);
-			}
-		}
 	}
 	
 	public EntityData getEntityData(EntityType en, String data) {

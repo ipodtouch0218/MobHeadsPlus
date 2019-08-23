@@ -31,15 +31,14 @@ public class EntityData {
 			this.lootingIncrease = (float) sec.getDouble("looting");
 		}
 		
-		String texture = sec.getString("texture");
-		if (texture.matches("\\d+")) {
-			this.skull = new ItemStack(Material.SKULL_ITEM, 1, Short.parseShort(texture));
-			this.texture = texture;
-		} else {
-			ownerName = (type + "-" + sec.getName());
-			this.skull = Skull.getCustomSkull(sec.getString("texture"), ownerName);
-			this.texture = sec.getString("texture");
+		ownerName = (type + "-" + sec.getName());
+		this.texture = sec.getString("texture");
+		try {
+			skull = new ItemStack(Material.valueOf(texture));
+		} catch (Exception e) {
+			this.skull = Skull.getCustomSkull(texture, ownerName);
 		}
+
 		
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
 		if (sec.isSet("name") && !sec.getString("name").equals("")) {

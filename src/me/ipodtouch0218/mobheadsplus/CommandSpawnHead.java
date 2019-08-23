@@ -1,7 +1,6 @@
 package me.ipodtouch0218.mobheadsplus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.Command;
@@ -55,7 +54,7 @@ public class CommandSpawnHead implements CommandExecutor, TabCompleter {
 		if (headType == EntityType.PLAYER) {
 			ItemStack skull = Skull.getPlayerSkull(headData);
 			SkullMeta meta = (SkullMeta) skull.getItemMeta();
-			meta.setDisplayName(entityData.getSkull().clone().getItemMeta().getDisplayName().replace("{0}", headData));
+			meta.setDisplayName(entityData.getSkull().getItemMeta().getDisplayName().replace("{0}", headData));
 			skull.setItemMeta(meta);
 			
 			playerSender.getInventory().addItem(skull);
